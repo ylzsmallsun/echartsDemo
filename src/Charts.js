@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PieChart from './components/PieChart';
+import BarChart from './components/BarChart';
 
 class Charts extends Component {
     render() {
@@ -7,6 +8,7 @@ class Charts extends Component {
             <div>
                 <div>
                     <PieChart />
+                    <BarChart />
                 </div>
             </div>
         );
