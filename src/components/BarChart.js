@@ -9,6 +9,8 @@ class BarChart extends Component {
   constructor(props) {
     super(props);
     this.initChartData = this.initChartData.bind(this);
+    this.setXAxis = this.setXAxis.bind(this);
+    this.setSeries = this.setSeries.bind(this);
     this.updateChartData = this.updateChartData.bind(this);
     this.state = {
       companies: [],
@@ -39,31 +41,35 @@ class BarChart extends Component {
         }
       },
       calculable : true,
-      xAxis : [
-        {
-            type : 'category',
-            data : this.state.companies
-        }
-      ],
+      xAxis : this.setXAxis(this.state.companies),
       yAxis : [
           {
               type : 'value'
           }
       ],
-      series: [
-        {
-          name: 'Open Price',
-          type: 'bar',
-          data:this.state.openPrices
-        },
-        {
-          name: 'Close Price',
-          type: 'bar',
-          data: this.state.closePrices
-        }
-      ]
+      series: this.setSeries(this.state.openPrices, this.state.closePrices)
     };
     return options;
+  }
+  setXAxis(data) {
+    return [{
+      type: 'category',
+      data: data
+    }];
+  }
+  setSeries(col1Data, col2Data) {
+    return [
+      {
+        name: 'Open Price',
+        type: 'bar',
+        data: col1Data
+      },
+      {
+        name: 'Close Price',
+        type: 'bar',
+        data: col2Data
+      }
+    ]
   }
   componentWillMount() {
     let me = this;
@@ -76,17 +82,14 @@ class BarChart extends Component {
         closePrices.push(obj.close);
       })
       me.setState({
-        companies: companies,
-        openPrices: openPrices,
-        closePrices: closePrices
+        options: {
+          xAxis: me.setXAxis(companies),  // companies, openPrices, closePrices in state are still [].
+          series: me.setSeries(openPrices, closePrices)
+        }
+      }, function () {
+        me.updateChartData()
+        console.log('update options finished')
       });
-      console.log(me.state);
-      let options = me.state.options;
-      options.xAxis[0].data = companies;
-      options.series[0].data = openPrices;
-      options.series[1].data = closePrices;
-      console.log(me.state.options);
-      me.updateChartData();
       console.log('success');
     }).fail(function (error) {
       console.log(error);
@@ -96,6 +99,7 @@ class BarChart extends Component {
     this.updateChartData();
   }
   updateChartData() {
+    console.log(this.state);
     if (!this.myChart) {
       this.myChart = echarts.init(this.refs.barChart1);
     }
@@ -103,6 +107,7 @@ class BarChart extends Component {
     this.myChart.setOption(this.state.options);
   }
   render() {
+    console.log('rendering');
     return (
       <div className="barChart">
         <div ref="barChart1" style={{width: "800px", height: "600px"}}>
