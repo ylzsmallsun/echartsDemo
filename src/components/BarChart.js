@@ -71,8 +71,10 @@ class BarChart extends Component {
       }
     ]
   }
-  componentWillMount() {
+  componentDidMount() {
     let me = this;
+    // render with initial data
+    this.updateChartData();
     let url = "https://api.iextrading.com/1.0/stock/market/list/gainers";
     let companies = [], openPrices = [], closePrices = [];
     $.get(url).done(function (data) {
@@ -83,6 +85,7 @@ class BarChart extends Component {
       })
       me.setState({
         options: {
+          ...me.state.options,
           xAxis: me.setXAxis(companies),  // companies, openPrices, closePrices in state are still [].
           series: me.setSeries(openPrices, closePrices)
         }
@@ -94,9 +97,6 @@ class BarChart extends Component {
     }).fail(function (error) {
       console.log(error);
     })
-  }
-  componentDidMount() {
-    this.updateChartData();
   }
   updateChartData() {
     console.log(this.state);

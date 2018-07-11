@@ -1,9 +1,9 @@
 {
-  "presets": ["react", "env"],
+  "presets": ["react", "env", "es2015"],
   "env": {
     "development": {
         "plugins": [
-            ["react-transform", {
+            ["transform-object-rest-spread", "react-transform", {
                 "transforms": [
                     {
                         "transform": "react-transform-hmr",
